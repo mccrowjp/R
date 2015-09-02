@@ -1,2 +1,2 @@
 # R
-Various statistical and plotting functions in R
+R scripts, and R functions for statistics and plotting
