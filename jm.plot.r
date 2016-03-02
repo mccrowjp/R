@@ -5,6 +5,12 @@ RGBcolorpal1=hsv(1/(1+exp(seq(-3.8,3.8,length=1000))),1,1)[300:1000]
 # Original VGA 16 colors
 VGA16colors=c("#000000","#000080","#008000","#008080","#800000","#800080","#808000","#C0C0C0","#808080","#0000FF","#00FF00","#00FFFF","#FF0000","#FF00FF","#FFFF00","#FFFFFF")
 
+# Default hue color palette for ggplot2
+ggplotColourHuePallette = function(n=10, h=c(0, 360)+15, c=100, l=65) {
+    if((diff(h)%%360) < 1) h[2]=h[2]-360/n
+    hcl(h = (seq(h[1], h[2], length = n)), c = c, l = l)
+}
+
 # Draw color gradient of x-values
 colored_column = function(x, mark=rep(FALSE,length(x)), minx=min(x), maxx=max(x), colmin="blue", colmax="yellow", res=100) {
     ramp = colorRamp(c(colmin, colmax))
