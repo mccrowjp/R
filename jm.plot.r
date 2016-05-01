@@ -27,6 +27,7 @@ plotxy_marginhists = function(x, y, margins=c(5,5), border=1, h.axis=TRUE, h1.ax
     lmat = matrix(c(2,4,1,3), ncol=2)
     layout(lmat, widths=c(4/5, 1/5), heights=c(1/5, 4/5))
     
+    par(mar=c(0,0,0,0))
     plot(1:1,axes=F,type="n",xlab="",ylab="")
     
     df = data.frame(x,y)
