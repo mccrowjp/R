@@ -131,6 +131,38 @@ drawAbundHeatmap = function(fin, fout) {
     dev.off()
 }
 
+plotCrossCorr = function(x1, x2, title=NULL, method="kendall") {
+    require(ggplot2)
+    df = NULL
+    for(i in 1:ncol(x1)) {
+        for(j in 1:ncol(x2)) {
+            ijrow = c(colnames(x1)[i], colnames(x2)[j], cor(x1[,i], x2[,j], method=method), cor.test(x1[,i], x2[,j], method="kendall")$p.value, 1, NA)
+            if(is.null(df)){
+                df = ijrow
+            } else {
+                df = rbind(df, ijrow)
+            }  
+        }
+    }
+    df = data.frame(row.names=NULL, df)
+    colnames(df) = c("Env","Taxa","Correlation","Pvalue","AdjPvalue","Significance")
+    df$Pvalue = as.numeric(as.character(df$Pvalue))
+    df$AdjPvalue = as.numeric(as.character(df$AdjPvalue))
+    df$Correlation = as.numeric(as.character(df$Correlation))
+    df$AdjPvalue = p.adjust(df$Pvalue, method="BH")
+    df$Significance<-cut(df$AdjPvalue, breaks=c(-Inf, 0.001, 0.01, 0.05, Inf), label=c("***", "**", "*", ""))
+    
+    p = ggplot(aes(x=Env, y=Taxa, fill=Correlation), data=df) +
+        geom_tile() + scale_fill_gradient2(limits=c(-1,1), low="#2C7BB6", mid="white", high="#D7191C") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5)) +
+        geom_text(aes(label=Significance), color="black", size=3) + 
+        labs(y=NULL, x=NULL, fill=method)
+    if(!is.null(title)) {
+        p = p + ggtitle(title)
+    }
+    print(p)
+}
+
 ## The following plots assume: df, kfit, pcafit, apres
 #
 # read in the data into df, where the first column is the labels, choose a number of clusters k (here k=4)
